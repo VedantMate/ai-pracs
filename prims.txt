@@ -1,0 +1,62 @@
+import heapq 
+
+class Graph:
+
+    def __init__(self):
+        self.graph = {}
+    
+    def addedge(self,u,v,weight):
+        if u not in self.graph:
+            self.graph[u] = []
+        if v not in self.graph:
+            self.graph[v] = []
+        self.graph[u].append((v,weight))
+        self.graph[v].append((u,weight))
+
+    def prims(self):
+
+        mst = []
+        pq = [(0,None,list(self.graph.keys())[0])]
+        visited = set()
+        total_cost = 0
+
+        while pq:
+            weight,parent,node = heapq.heappop(pq)
+
+            if node in visited:
+                continue 
+
+            visited.add(node)
+
+            if parent is not None:
+                mst.append((parent,node,weight))
+                total_cost += weight 
+            
+            for neighbour,weight in self.graph[node]:
+                if neighbour not in visited:
+                    heapq.heappush(pq,(weight,node,neighbour))
+
+        return mst,total_cost 
+
+g = Graph()
+
+g.addedge('A','B',1)
+g.addedge('A','F',2)
+g.addedge('B','C',4)
+g.addedge('B','E',2)
+g.addedge('E','F',5)
+g.addedge('F','G',4)
+g.addedge('C','G',3)
+g.addedge('C','D',6)
+g.addedge('G','D',2)
+
+mst,total_cost = g.prims()
+
+print("edges in mst are : ")
+for u,v,w in mst:
+    print("%s -- %s == %d"%(u,v,w))
+
+print("total cost of MST is : ",total_cost)
+
+
+
